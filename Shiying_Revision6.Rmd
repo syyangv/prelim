@@ -1,0 +1,364 @@
+---
+title: "A Phonotactic Analysis of the Organization of Lexicons"
+author: "Shiying Yang"
+fontsize: 12pt
+output:
+  word_document: default
+  pdf_document:
+    dev: cairo_pdf
+    keep_tex: yes
+    latex_engine: xelatex
+    number_sections: yes
+header-includes:
+- \usepackage{setspace}\doublespacing
+- \usepackage{tipa}
+- \usepackage{longtable}
+- \usepackage{pdfpages}
+nocite: |
+  @Albright_2007
+  @Albright_2009
+geometry: margin=1.2in
+tables: yes
+bibliography: manuscript18.bib
+---
+```{r 'load packages', echo=FALSE, message=FALSE}
+library(tidyverse)
+library(kableExtra)
+library(knitr)
+```
+
+
+# Introduction {#intro}
+
+```{r child="Intro_Prelim.Rmd"}
+```
+
+# Literature review
+
+## Phonotactics and probabilistic phonotactic models {#models}
+
+<!--FINI07-->
+The study of phonotactics is interested in the phonological acceptability of phonetic sequences. It is typically thought of as a set of language specific (and some potentially universal) rules or constraints which determines if a word may or may not appear in the lexicon of a language. For example, as mentioned in Section \ref{intro}, despite their shared un-attestation, the phonotactics of English would differentiate between the acceptable /blik/ and the unacceptable /bnik/. In this case, /bl/ is a prevalent onset in English while the onset /bn/ is both unattested and often cannot be elicited naturally from English speakers [e.g. @bn]. On closer inspection, laterals (/l/) are more sonorant than nasals (/n/), and it has been theorized that English requires onsets with a larger rise in sonority [see @Clements_sonority; @Berent] [^1]. 
+
+[^1]: This generalization is not accurate when borrowed proper names such as Vladimir and zloty are considered [e.g. @Duanmu_vl]. The fact that these clusters can be naturally elicited from English speakers suggest that /vl/ and /zl/ are also acceptable onsets for English and that the requirement of larger sonority rise is not absolute.
+
+Phonotactics can be thought of as a accumulation of such principles that are induced based on existing sound patterns in a lexicon. However, models differ in whether acceptability (or well-formedness) is categorical or probabilistic. Under rule-based or constraint-based phonology [Optimality Theory; @OT], whether a sequence is licit or not is a binary question with respect to the adopted grammar.
+
+
+There are, nevertheless, non-categorical patterns within languages which non-probabilistic grammars cannot easily describe. <!--There seems to be varying degrees of well-formedness both for words in the lexicon and unattested sound sequences. For existing words, there are differences in how typical it is for the lexicon.  These examples suggest that within acceptable wordforms, there are differences in how preferable certain combinations are to the phonotactics of that language. On the other hand,-->Well-formedness (also referred to as acceptability and wordlikeness) ratings of non-words consistently show gradience across test paradigms. If speakers' judgments are any indication of their implicit knowledge about phonotactics, this result should imply that there is gradience in phonotactics as well. Along this line of thought, it is not enough for the phonotactics of a language to judge whether a sequence is licit or not. The grammar should also be able to evaluate how typical or representative a word is of the language.
+
+In light of the gradience observed in well-formedness judgments, rule-based or constraint-based phonology would not be adequate in describing the issue other than associating it with *performance* rather than *competence* [@Chomsky_competence, p\. 4]. The fine-grained gradience calls for phonotactic models to incorporate probabilistic knowledge of the sequencing of word subparts in the lexicon. The term "stochastic phonology" was proposed to put emphasis on the probabilistic nature of sound structures [@Stochastic]. This line of theories recognize phonotactics and the cognitive representation of sound structure in general as probabilistic rather than definitive. This approach makes it possible to evaluate neologisms as extensions of the real lexicon. By taking into account the combinatorial properties of sounds in the lexicon, phonotactic probabilities predicted by these phonotactic models can take on similar gradient patterns as seen in well-formedness judgments. Correlation between these probabilities and well-formedness ratings are thus used to substantiate various models with emphasis on different phonological units in phonotactics from syllables<!--[e.g. @Pierrehumbert_1997]--> and segments<!--[e.g. @Frauenfelder]--> to subsegmental features<!--[e.g. @Albright_2009]--> and phonological constraints<!--[e.g. @Hayes_2008]-->.
+
+<!--syllable/hierarchical structure of syllables-->
+In terms of syllables<!--?-->, @Pierrehumbert_1997 proposed a phonotactic model where probabilities of words were defined as the product of probabilities of their syllable constituents.<!--They divided stressed and unstressed syllables respectively into onsets and rimes and calculated the probability of each specific constituent's appearance in that constituent position.--> Log probabilities of mono- and di-syllabic non-words calculated according to this model were shown to have the "best" correlation with the number of negative responses compared to untransformed probabilities and the lowest constituent probability, despite their significant correlations with the data. @Frisch_2000 tested the same model on ordinal well-formedness ratings and binary judgments of multi-syllabic non-words <!--with controlled syllable template, length and stress pattern-->to reveal similar results which reaffirmed the relevance of syllable constituent frequencies for phonotactic evaluation. They further examined correlations of well-formedness scores with other predictors including log probabilities over segments and the log number of neighbors, and found these 3 predictors resulted in similar higher correlation coefficients than probabilities of the worst syllable or the worst segment. These two studies highlighted the importance of considering the entire word in well-formedness judgments rather than a single worst part. This finding served as evidence against rule-based or constraint-based grammar in phonotactic evaluations since both accounts would disqualify a word over the violation of one rule or one high-ranking constraint by a subpart.
+
+The role of syllable constituent frequencies in phonotactic probabilities is also highlighted in @Treiman_2000. This study showed that CVC syllables <!--with balanced segment frequencies-->of the high rime frequency group are rated as more well-formed than those of the low rime frequency group by both adults and elementary school-aged children. In this study, groups are divided based on type frequencies of rimes from dictionaries. The high frequency group was selected from the top half while rimes in the low frequency group all come from the bottom half of frequency counts. In the same study, this result was extended to blending tasks where high-frequency rimes were preserved more than low-frequency rimes. These findings are consistent with predictions of a phonotactic model based on syllable constituents. 
+<!--writing center 181010-->
+
+<!--transitional probabilities: segment-->
+Other than phonotactic probabilities over syllable constituents, probabilities over segments or probabilities assigned by $n$-gram models in general have often been used as baseline phonotactic models in phonological and perceptual studies<!--with various assumptions-->. An $N$-gram language model is a common way of assigning probabilities to the last word of an $N$-gram (an $n$-word sequence) by computing conditional probabilities of a word given $n-1$ words preceding it [see @Jurafsky_book, chapter 4]. In turn, the probability of a complete sequence is the product of conditional probabilities of all words in it. For the purpose of assigning probabilities to phonological sequences, the unit of consideration is often segments. In this case, $N$-phone models are adopted, where the probability of each segment is conditioned on the previous $n-1$ sounds (see Section \ref{freq} for an example of the implementation of an $N$-phone model). Bi-phone probabilities from bi-phone language models have been shown to be at least as predictive as probabilities calculated over syllable constituents [@Frisch_2000] or natural classes [@Albright_2009] of well-formedness scores on various sets of experimental stimuli.
+
+Not only does the preference for higher segmental- and sequential-probability words occur in well-formedness judgment tasks, @Jusczyk_1994 showed that 9-month-old infants are already sensitive to segmental probabilities in the language since they looked longer at CVC non-words with higher segment and bi-phone probabilities than at low-probability non-words<!--token probability in this case-->. Moreover, @Vitevitch_1997 adopted the same set of CVC syllables and phonotactic models to demonstrate that besides being rated higher by adults in terms of well-formedness, high-probability di-syllabic non-words also induce lower reaction time in an auditory repetition task [see also @Vitevitch_Luce_2005]. Such findings suggest that the facilitative effect of segmental probabilities in perception and perceived well-formedness is rather robust to changes in test paradigms. 
+
+<!--subsegmental probabilities: Albright 2009, based on natural classes-->
+@Albright_2009 proposed a phonotactic model which attributed phonotactic probabilities to both bi-phone probabilities and the probabilities of segments being analyzed in terms of natural classes. Log natural class-based bi-phone probabilities and log segment-based bi-phone probabilities were used to fit judgement data on onsets and monosyllabic non-words. Results showed that the feature-based model was predictive of well-formedness judgments both on attested and unattested sequences. It makes an independent contribution even though it does not replace the segmental model which were better predictors in terms of attested sequences. Compared to models that calculate probabilities based on segments or clusters, the advantage of a subsegmental model is the ability to differentiate between non-words whose subparts are unattested in the lexicon. 
+
+<!--phonotactic scores over weighted constraints-->
+Another way of accounting for features in gradient well-formedness judgments is using Maximum Entropy models which assume that the logarithm of the probability of a wordform is the linear combination of orthogonal weighted constraint violations [e.g. @Jager_2006]. @Hayes_2008 developed an algorithm that learns the set of constraints and assigns weights (penalties) to constraint violations along the form of a MaxEnt grammar. Phonotactic probabilities based on this model was tested on data of English speakers' judgments of onsets and demonstrated more accurate performance than probabilities calculated over syllable constituents and segments. However, the model did a better job in distinguishing between unattested forms and could not tell apart attested onsets.
+
+In brief, despite that classical generative phonology and OT treat phonotactics as a set of categorical rules or constraints, there is evidence that probabilistic distributions of levels of phonological representations can be reflected
+in speakers’ gradient intuition about the acceptability of sequences. Therefore, phonotactic models can benefit from incorporating probabilistic knowledge of the sequencing of word subparts in the lexicon.
+<!--FINI07-->
+
+## Accidental gaps {#gap}
+
+According to rule-based and constraint-based phonology, any non-existent pattern that is deemed illicit (e.g. /bnik/) can be considered as a structural or systematic gap in the lexicon, whereas unattested patterns that are permitted by the grammar (e.g. /blik/) would be considered accidental gaps. For this line of theories, there is a clear-cut boundary between structural and accidental gaps given the imposed rules or constraints. This distinction between structural and accidental gaps is blurred when taking into consideration the probabilistic nature of phonotactics.
+
+@Pierrehumbert_1994 used the product of probabilities of word-initial and word-final consonants and clusters to predict the occurrence of word-medial clusters in the English lexicon and showed that word-medial triconsonantal clusters with lower predicted probabilities are less accepted by speakers and indeed do not show up in the lexicon. In this study, clusters were divided into groups based on their expected frequencies, with the highest 20 clusters in the first group, the next 20 in the second group and so on. @Pierrehumbert_1994 found that the number of attested clusters in each group decreases steadily with its ranking and that the top 10 groups covers all attested word-medial clusters with few exceptions. Following the idea of considering phonotactics as probabilistic, this method of using expected frequencies to predict the attestation or un-attestation of clusters implies that just like the gradience in well-formedness, the surfacing of sequences in the lexicon is also dependent on their phonotactic probabilities. Thus, certain gaps in the lexicon are not merely accidental, but might be due to low phonotactic probabilities.
+
+<!--suggests that any unattested well-formed clusters whose expected frequencies are similar to or higher than those of attested clusters would be considered accidental gaps. Similarly, any unattested licit clusters with low expected frequencies would be considered actual gaps. However, .-->  
+However, @gorman2013 used both expected frequencies and MaxEnt OT to predict the un-attestation of all possible English word-medial clusters and found that neither method is sufficiently accurate in predicting whether a cluster would be unattested or not. @gorman2013 argues that due to the small size of the lexicon and the skewed distribution of onsets and codas in the lexicon, the prevalence of accidental gaps is inevitable. @Frisch_1996 also questioned the result of @Pierrehumbert_1994 and pointed out that even though it is normal for individual clusters in low-ranking groups as categorized by @Pierrehumbert_1994 to not occur, the number of low-frequency clusters in the lexicon should match the aggregated expected frequencies of clusters in low-ranking groups. Thus, it is questionable that none of them are attested. <!--since at least a certain subset of low-probability clusters  actually did not have joint probabilities so low that would completely prevent any of them from surfacing. -->In other words, expected frequencies alone would not be sufficient in explaining the un-attestation of accidental gaps. 
+
+Seeing this seemingly systematic absence of lower-probability clusters, @Frisch_1996 speculated that combinations with higher expected frequencies have more exemplars in the lexicon and would be modeled after more in the event of selecting a new word, which drives a "rich get richer" and "poor get poorer" effect. This conclusion is consistent with examples discussed in \ref{models}, where occurrences of patterns in the lexicon (e.g. /\textipa{2}f/, /\textipa{\ae}l/) do not always conform to their expected frequencies calculated based on probabilities of individual segments. In a broader sense, this hypothesis implies that the relationship between the probability of attestation and the phonotactic probability of sequences is not linear. The lexicon might avoid combinations of low-frequency segments or sequences more than expected by probability-based phonotactic models.
+
+@Martin also demonstrated that in English, Navajo and Turkish, compound words have dis-preferences for patterns that are illicit within stems. For example, English allows geminates across morpheme boundaries (e.g. *bookcase*), but noun-noun compounds and words with *-ness*, "*less*" and "*-ly*" suffixes all have less geminates in inter-morphemic clusters than expected possibly due to geminates being illicit within English stems. In other words, compound words also have a tendency to conform to phonotactics pertaining to stems, which further indicates the advantage of preferred structures in the forming of lexicons.
+
+## Superadditivity and constraint conjunction {#super}
+
+Along the lines of inconsistencies between expected frequencies and attested frequencies, @Albright_2009_ms looked into in Lakhota where clusters, fricatives, aspirates and ejectives do not tend to co-occur in the initial and medial onset positions. Analysis of Lakhota mono- and di-syllabic roots revealed that almost any combination of these structures in the initial and medial onset positions occur less often in the lexicon than expected. For example, according to frequencies of clusters respectively in the initial and medial onset positions, the expected frequency of clusters in both positions (e.g. [gle\textipa{S}ka] 'spotted') is 80 out of 1924 disyllabic words. However, the observed occurrences of such a combination is 54. Compared to 54/80, the ratio between observed and expected frequencies is even lower for combinations of clusters and aspirates (11/47), clusters and ejectives (1/10) and ejectives and aspirates (0/10). Since clusters and fricatives are in general more frequent in Lakhota lexicon than aspirates, and aspirates are in turn more frequent than ejectives, the degree of under-attestation of onset combinations is correlated with frequencies of individual structures[^3].
+
+[^3]: It was also found that combinations with nasals do not conform to the same underattestation pattern as other structures. Despite that nasals occur less frequently in the lexicon than aspirates, combinations involving nasals all have frequencies around expected values. @Albright_2009_ms suggested that nasals are not in themselves dispreferred in Lakhota, they occurred less frequently in the lexicon because there are only 2 nasals in the phonemic inventory, whereas fricatives, aspirates and ejectives all involve at least 4 phonemes.
+
+These findings are consistent with the "poor getting poorer" effect proposed by @Frisch_1996 as mentioned in Section \ref{gap}. It is unlikely that these are caused by specific constraints since structures such as fricatives and clusters are not usually considered in long-distance dependencies. @Albright_2009_ms attributed the under-attestation of these co-occurrences to "superadditive" effects of independent markedness violations. More specifically, clusters, fricatives, aspirates and ejectives are relatively dispreferred (marked) by the grammar, and this dispreferrence is correlated with their in-frequencies in the lexicon. These structures together would induce "superadditive" penalties, which lead to the under-attestation of their co-occurrences. Thus, the lexicon would not allow structures that are more complex than a certain complexity threshold. In terms of a MaxEnt model, this effect on a combination of low-frequency structures would be interpreted as two weaker constraints that target individual structures cumulatively outweigh a dominant constraint to lower the probability of its surfacing. In other words, the two individual constraints would gang up to beat a stronger constraint. As a result, input with such combinations would be less likely to surface in the lexicon even though words with a single marked structure can surface as expected. <!--The evidence regarding nasals is used to establish this effect as being prompted by the grammatical status of structures, rather than frequencies themselves.Going back to the emergence of lexicons, the language-specific superadditive penalties on patterns would be imposed on outputs on top of the previously defined language-specific stochastic grammar to filter candidate wordforms for the lexicon.-->
+
+Compared to a grammar which evaluates input on the basis of "the winner takes it all", the mechanism that leads to superadditive effects in Lakhota described in @Albright_2009_ms deviates from classical OT mainly in two ways. Firstly, as argued in both Section \ref{models} and Section \ref{gap}, the discrepancy between observation and expectation and the gradient nature of under-attestation of different combinations call for a probabilistic rather than categorical description of the lexicon. Secondly, the effects are explainable with ganging-up cumulativity rather than classical OT that does not allow weaker constraints to gang up and beat a stronger constraint. Simply put, all constraints can have an effect on the output, not just dominant constraints [see @Jager_2006]. The idea of weighted constraints and ganging-up cumulativity is hardly new when taking into consideration Harmonic Grammar [e.g. @HG] and MaxEnt grammar. Ganging-up cumulativity supposedly shows additive effects of constraints rather than "superadditive" effects. Nevertheless, the proposed model in @Albright_2009_ms does demonstrate "superadditive" penalties of constraints because it is described as a hierarchical model where input to the evaluation process has already been filtered by "baseline constraints", thus any penalty incurred by ganging-up cumulativity is considered additional penalty. 
+
+Similar patterns of superadditivity of constraints were also attested respectively in Colloquial Bambara and Dioula d'Odienné by @Green_Davis_2014 and @Shih_2017. In particular, @Shih_2017 adopted a MaxEnt model for tone alternation in nouns that encapsulates superadditivity without committing to a hierarchical model by independently assigning weights to constraint conjunctions rather than only to individual constraints. Constraint conjunctions were modeled as interaction terms in regression models in the form of products of constraints (e.g. $C_1 \times C_2$). @Shih_2017 compared models with and without constraint conjunctions and showed that the inclusion of constraint conjunctions improves the explanatory power of the grammar without driving up its complexity. These instances together point to the possibility that superadditivity of penalties on certain structures can be prevalent in languages. Languages have a tendency to avoid multiple phonological complexities in a word.
+
+The inclusion of constraint conjunction in terms of superadditivity differs from the standard conception of local constraint conjunction (e.g. $C_1$ & $C_2$) with strict locality restrictions [e.g. @local]. Local constraint conjunction was introduced into OT to account for patterns that are similar to ganging-up cumulativity. For example, final devoicing can be explained by the violation of a conjoined constraint both on codas and voiced obstruents. As a result, only voiceless codas can surface. Crucially, the two constraints involved in this conjunction are evaluated on the same segment due to locality restriction on constraint conjunction [see @LCC; @ito]. 
+
+In other words, local constraint conjunction emphasizes that the violation of constraints in the same place is worse than separate individual violations. This view is compatible with classical OT and additive cumulativity of constraints in assuming that phonological processes affect the phonological pattern independently. Even when local constraint conjunctions are taken into consideration, they only affect one part of the word within a segment or a syllable. However, patterns that demonstrate the "poor getting poorer" effect and the superadditivity effect show coordination across syllable boundaries: the coda of one syllable and the onset of the next can have an impact on the structure of each other [e.g. @Pierrehumbert_1994; @Frisch_1996], so do onsets of two adjacent syllables [e.g. @Albright_2009_ms]. Therefore, findings regarding superadditivity implies that phonological processes are not independent and that the lexicon might have a general tendency of avoiding the co-occurrences of complex structures, regardless of where they are in a word.
+
+
+## Processing and well-formedness {#NAM}
+
+### Neighborhood density and phonotactic probability {#recognition}
+
+Even though well-formedness judgments have been used as empirical evidence for phonotactic models, another line of theory accounts for the observed gradience only from the perspective of word processing. This line of research stemmed from the idea that the more similar a non-word is to real words, the more readily speakers can accept it as a well-formed potential addition to the lexicon. @Greenberg_1964 used a measurement of similarity dependent on the number of valid word types that can be obtained from substituting certain numbers of segments from a non-word. They found that CCVC monosyllabic non-words rated higher by this similarity metric induced higher well-formedness scores. This metric is along the same lines with other measures of perceptual similarity such as neighborhood density and edit distance. Such a result thus implies that non-words with denser neighborhoods would be rated as more acceptable than those with sparser neighborhoods.
+
+Moreover, well-formedness judgments were found to be significantly correlated with repetition accuracy, this phenomenon was termed the *wordlikeness effect* [@Gathercole_1996]. Non-words with higher phonotactic probabilities also lead to better recognition memory performance [@Frisch_2000].
+Since both phonotactic probability (see Section \ref{models}) and neighborhood density have been found to have a positive correlation with well-formedness judgments, these results suggest that both higher neighborhood density and higher phonotactic probability should have facilitative effects on word recognition<!-- since they both have positive correlations with well-formedness ratings-->. However, literature on spoken word recognition and lexical neighborhoods came to almost the opposite conclusion. Higher neighborhood density actually has an inhibitory effect on spoken word recognition, which was explained by competition in activation from neighbors in the mental lexicon [@Goldinger_1989; @Luce_1998]. 
+
+Further investigations into these phenomena revealed that for real words in the lexicon, higher neighborhood density leads to inhibition in word recognition; while for non-words, higher phonotactic probability would lead to faster recognition [@Vitevitch_1997; @Vitevitch_Luce_1998; @Vitevitch_Luce_1999]. @Vitevitch_Luce_1999 hypothesized that the reversed effect observed in words and non-words could be attributed to different dominant mechanisms in the processing of these items. Namely, real words would be processed mainly at the lexical level, while non-words would mainly be processed at the sublexical level due to their lack of representation in the mental lexicon. To test this hypothesis, they mixed words and non-words in a same-different task to elicit sublexical processing for real words assuming that the adopted strategy would depend on the most common type of words in the list of stimuli. Similarly, an auditory lexical decision task was performed with non-words to elicit lexical processing. Results showed that, as predicted, real words with higher neighborhood density had less inhibition on recognition and non-words with higher phonotactic probabilities were responded to more slowly rather than more quickly under these manipulations. 
+
+These results indicate that both lexical and sublexical mechanisms are involved in the processing of real words and non-words. Sublexical information, which could be attributed to probabilistic properties captured by phonotactics (as discussed in Section \ref{models}), plays a more important role in speakers' well-formedness judgments of non-words, despite the prominence of neighborhood density effects. Nevertheless, well-formedness ratings in practice can be affected by the way they are elicited. 
+Besides spoken word recognition, evidence in word production is also relevant in the representation of the mental lexicon and phonotactic knowledge. Contrary to effects in word recognition where dense neighborhood generally inhibits perception, it has been found that words with fewer neighbors are more prone to speech errors and give rise to higher reaction times in word repetition task [e.g. @Vitevitch_1997; @Vitevitch_2002; @Vitevitch_2003]. In this case, phonotactic probabilities also have a facilitative effect on production. Moreover, effects of both factors persist when the other is controlled for [@Vitevitch_1997; @Vitevitch_2004]. Th advantage in production of words with denser neighborhoods and higher probabilities was attributed to higher activation level driven by the presence of a larger number of words that are similar to the target or share the same subparts [@Vitevitch_2002].
+
+Taken together, it has been established that phonotactic probabilities and neighborhood densities can both influence language processing. Neighborhood densities have varying effects in word recognition and production, but phonotactic probabilities consistently show a processing advantage both in spoken word recognition and in production. 
+
+### Lexical and phonotactic accounts of well-formedness judgments {#compare}
+
+Given that distributions of phonological units reflect how representative any sequence is in the lexicon. Phonotactic models that focus on statistical properties within words imply that higher well-formedness ratings would be attributed to subparts that are commonly observed in the lexicon. Lexical models that focus on similarity put more emphasis on how much overlap a sequence has with other words in the lexicon. As shown in previous sections, results obtained along these two approaches are highly correlated. Especially for non-words, phonotactic probabilities and neighborhood densities both have positive correlations with well-formedness ratings. This correlation between metrics is hardly surprising, since the two approaches represent the same idea which is how representative a phonological sequence is of the lexicon of a language. Even though ways of calculating phonotactic probabilities and neighborhood densities are distinct from each other, words with many neighbors that are one segment away from it would inherently have more prevalent subparts.<!--Vitevitch et al. 1999 positive correlation between neighborhood density and phonotactic probability--> 
+
+As a result, in practice, effects of the two accounts on well-formedness ratings are hard to separate. @Bailey_Hahn_2001 created stimuli of monosyllabic non-words that were generated based on a random process<!--chosen based on randomly choosing from non-words that were 2 phonemes away from a real word--><!--with controlled distance from real words--> to investigate more generally the individual and joint predictive power of phonotactic probabilities and similarity measures on well-formedness judgments. They found that their Generalized Neighborhood Model (GNM), which involves both the number of neighbors that are 1- and 2-phoneme away and the similarity between individual corresponding phonemes, accounted for more variance than the simple count of neighbors of single edit distance and other probabilistic phonotactic models. They thus concluded that both phonotactics and lexical processing have unique effects on wordlikeness ratings, which implies distinct cognitive sources for this task, but lexical similarity is the more important factor.
+
+In light of this result, @Shademan_2006 proposed that the observed difference in contributions of the two types of factors in @Bailey_Hahn_2001 could have stemmed from the design of experimental stimuli where fillers of real words were added. In this study, in the experiment where real words were not a part of the stimuli, only phonotactic probabilities over syllable constituents had a significant main effect. Only in the experiment where real words were a part of the stimuli did lexical similarity show a significant main effect along with phonotactic probabilities. From these results, Shademan (2006) concluded that the contribution of lexical similarity to well-formedness ratings can vary depending on experimental design, which is in accordance with the previously discussed theory that both lexical and sublexical mechanisms can be adopted<!--?does it sound like exclusive or? ask a native speaker--> in the presence of different stimuli [@Vitevitch_Luce_1999]; while the effect of phonotactic probabilities was invariant across experiments.
+
+GNM was also fitted to different datasets in @Albright_2009 [see also @Albright_2007] in addition to phonotactic models over segments and natural classes as discussed in Section \ref{models}. Similar to @Bailey_Hahn_2001, this study also showed unique effects of lexical similarity and phonotactic probabilities on well-formedness ratings. However, phonotactic probabilities, especially log bi-phone probabilities, rather than lexical similarity were found to account for the bulk of variance in well-formedness ratings. Besides the influence of real words pointed out in Shademan (2006), the discrepancy was also attributed to the lack of non-words on end-points of the well-formedness scale in the original stimuli since all test items in @Bailey_Hahn_2001 were either one- or two-phoneme away from real words. Additionally, the independent significant effect of incorporating feature-based probabilities in @Albright_2009 implies the involvement of subsegmental analysis in phonotactic evaluation. This implication further justifies that the gradience in well-formedness judgments arises out of grammatical reasons that cannot be subsumed by analogy-based lexical influences in online processing.
+
+To summarize, lexical similarity and phonotactic probabilities both play significant roles in the task of well-formedness judgments, and it is still hard to delimit lexical effects from effects driven by sublexical statistical information. Therefore, both factors should be taken into account in theorizing about higher level issues. In addition, it should be reliable to see well-formedness as a measure of phonotactic acceptability since their correlation is less susceptible to changes in experimental design. 
+<!--
+### Influences in production and implications for the lexicon {#lex}
+
+The facilitative effect of high phonotactic probability on production leads to hypotheses about the influence of phonotactic probabilities on the organization of the lexicon. <!--Similar to the mechanism behind the "poor getting poorer" effect proposed by @Frisch_1996, @Martin showed that the distribution of consonants stays stable between Old English and Modern English despite the drastic change in vocabulary.
+-->
+
+## Challenges to the accepted view of phonotactics
+
+Section \ref{models} argued for probabilistic phonotactic models over categorical ones. Different ways of quantifying phonotactic probabilities introduced in Section \ref{models}, despite their distinct choices of levels of phonological representations, recognize that the evaluation of a word is contingent on the additive phonotactic probabilities of all subparts. 
+
+Section \ref{super} touched on the assumption of independence between phonological processes. Given this assumption, different parts of words are evaluated independently by phonotactic models. However, the gradient patterns discussed in @Frisch_1996, @Albright_2009_ms and @Martin all point to the possibility that there are long-distance dependencies between different parts of words or different constraints even after cumulativity of phonotactic probabilities are accounted for. 
+
+Another line of research that challenges the independence assumption comes from the examination of the organization of lexicons. @GP set out to explore whether lexicons across languages would be sparser or more clustered due to competing functional pressures for distinctiveness and regularity after controlling for phonotactics. They adopted 5-phone phonotactic models over segments for Dutch, English, French and German lexicons and created baseline lexicons assuming that wordforms would be randomly selected from the pool of candidates licensed by the respective 5-phone models according to their phonotactic probabilities. In order to test which functional pressure has the more prominent effect on lexicons, a range of metrics on overall wordform similarity including the number of minimal pairs, average string edit distance and network measures of phonological neighborhoods were utilized to compare the real lexicon to baseline lexicons. Results from these comparisons suggest that the real lexicon is more clustered than would be expected by general phonotactic concerns. This preference for observed regularity in Dutch, English, French and German lexicons was attributed to processing advantages for words with dense neighborhoods in retrieval, memory and acquisition (e.g. @Vitevitch_2002), despite their disadvantage in word recognition. @GP argued that these processing preferences could potentially shape a phonotactically-filtered base to become a lexicon that is more clustered than sparse.
+
+@GP attributed the observed clustering in lexicons to a disposition for similarity due to processing advantages. <!--This line of thoughts is not unlike the theory outlined in Section \ref{lex} where the more phonotactically probable words would be preserved by the speech community due to their processing advantages.--> It is plausible to hypothesize that superadditivity can also be a factor in the lexicon's tendency for more easily processable wordforms. Rather than relying entirely on a similarity account, a more refined system of phonotactics which tends to avoid combinations of phonological complexities can also contribute to the discrepancy between the real lexicon and phonotactically-controlled baselines.
+
+# A study about the organization of lexicons from the perspective of phonotactics {#study}
+
+## Proposal {#hypothesis}
+
+### Issues and hypotheses
+
+The current study set out to explore how the real lexicon differs from what would be expected based on standard phonotactic models. More specifically, the main question is whether superadditivity in phonotactics can be observed by comparing the real lexicon to lexicons generated from phonotactic models that only account for additive penalties induced by subparts. If a probabilistic phonotactic model which assumes independence between phonological processes is adequate in accounting for wordforms in the real lexicon, baseline lexicons randomly generated from this model should have distributions of phonotactic probabilities that are more or less the same as the distribution of probabilities based on the real lexicon. This served as the null hypothesis in data analysis. On the other hand, if there are superadditivity effects in a language, lexicons generated based on probabilities from an additive phonotactic model would include expected occurrences of sequences that are supposed to be under-attested in the real lexicon due to superadditive penalties. Thus, the probability distribution of phonotactic probabilities of the real lexicon would be expected to shift to the end of higher probabilities from distributions of baseline lexicons.
+
+Moreover, since superadditivity effects are usually associated with (marked) structures that are of low frequencies to begin with, the surfacing of under-attested patterns in generated lexicons would lead to more words with lower probabilities than in the real lexicon. Therefore, a heavier tail would be expected from distributions based on baseline lexicons. 
+
+### Approaches to the problem {#param}
+
+A cross-linguistic study was conducted to examine whether the proposed pattern of superadditivity in discrete cases can be generalized to a variety of languages from different language families. Similar to the choice made by @GP, phonotactics of each language was based on a language model that conditioned on a certain number of segments to ensure the phonotactic acceptability of candidate wordforms. Consistent with both the approach in @GP and the hierarchical model proposed by @Albright_2009_ms, baseline lexicons were generated by randomly sampling from these candidate wordforms according to their assigned phonotactic probabilities. For each language, the target for comparison were probability density distributions of log phonotactic probabilities of words from these generated lexicons and that of the real lexicon. 
+
+The null hypothesis in question is whether words in baseline lexicons are sampled according to the same probability distribution as those in the real lexicon, which translates into hypothesis testing for distributions rather than hypothesis testing for parameters in each distribution. As will be shown later in Section \ref{res}, distributions of log probabilities of real lexicons are highly skewed. Therefore, in order to see how the real lexicon might differ from the baseline, test
+statistics which are functions of variables such as the median and other quartiles
+were chosen. The p-values in these cases would depend on where the observed values
+of these parameters (given the real lexicon) lie in the cumulative distributions of these
+parameters which are in themselves random variables. More details about distributions of these parameters and the hypothesis testing procedure will be discussed in Section \ref{res}.
+
+## Methods
+
+### Materials
+<!--FINI01-->
+
+```{r basic_table, echo=FALSE, results='markup'}
+load('Data_for_Plotting/Corpora_info.RData')
+kable(corpora_info_orig[,-1], format = 'latex',
+             booktabs = T, align = 'c', digits = 3,
+             caption = 'Information on filtered lexicons') %>% 
+  kable_styling(position = 'center') %>%
+  column_spec(3, width = '6.5em') %>%
+  column_spec(5, width = '4em') %>%
+  column_spec(1, width = '3em') %>%
+  #column_spec(2, width = '5em') %>%
+  column_spec(4, width = '7em') %>%
+  column_spec(2, width = '3em') %>%
+  column_spec(6, width = '7em') %>%
+  footnote(alphabet = 'All Japanese words were used due to a lack of frequencies in the Callhome transcripts')
+#  row_spec(0, align = 'c')
+```
+
+Six languages from different language families were used in the current study. Frequencies and phonological representations of American English words were taken from the CMU Dictionary [@cmu]. I used the LDC lexicons with corresponding frequency data for Egyptian Arabic and Japanese [@LDC_AR; @LDC_JP]. The Korean Telephone Conversations Lexicon [@LDC_KR] was used for Korean, but word frequencies were taken from the OpenSubtitle Corpus [@OpenSub] due to the small amount of frequencies in the Korean Telephone Conversation Transcripts. The OpenSubtitle Corpus was also used for German and Spanish for word frequency counts, while their phonological representations were transcribed using the text-to-speech software eSpeak [@espeak]. Phonetic representations were used for all languages other than English with phonemic representations[^4]. Sketches of phonological inventories of these languages according to respective lexicons are presented in Appendix B. 
+
+[^4]: This inconsistency was mainly due to the unavailability of easily accessible lexicons of phonemic representations in most languages. Theoretically the choice between phonetic and phonemic representations should not change relative probability differences of different sounds or patterns in the model. To further eliminate this concern, for Japanese and Korean where phonemic representations were available, both types of representations were processed and analyzed. Results from phonemic representations did not change the interpretation of the reported results based on phonetic representations.   
+
+Lexicons of different languages were studied based on their core vocabularies in order to eliminate potential influence from atypical infrequent words or borrowings. Function words and proper names were filtered out since closed class words tend to have high frequencies and unique phonological properties that are not representative of the rest of the lexicon. Since I only used phonological representations of words, homophones were counted once in the lexicon with all frequencies summed up. For each language, wordforms whose token frequencies were greater than or equal to the $5000th$ highest frequency in the spoken corpus were selected to constitute the training dataset. After this filtering, only type frequencies would be relevant for the following study.
+
+Table \ref{tab:basic_table} presents the information of lexicons used in the current study after this filtering process. The column of "Cutoff frequency" lists frequencies of the $5000th$ most frequent word in the corpus of each language after taking out function words and proper names, this number determines the size of core lexicons taken out from each language which varies from $5001$ to $6003$. Percentages of remaining word types in lexicons after filtering indicate that filtered lexicons used for the study contain only a fraction of word types from original corpora. Despite their relatively small sizes compared to the number of all attested words from each corpus, these filtered lexicons still represent the majority of word tokens occurring in these corpora as indicated by percentages of word tokens in Table \ref{tab:basic_table}. 
+
+<!--[^1]:-->
+<!--related to (in agreement with) how more frequent words are shorter in the lexicon-->
+<!--FINI01-->
+
+### The language model {#freq}
+<!--FINI02-->
+After function words, proper names and low-frequency words were filtered out, a phonotactic model was trained for each language in the form of a $n$-gram language model over segments[^2]. In a preliminary study conducted on monosyllabic words in American English and Mandarin [@scil_2018], tri-phone models were used. <!--Despite only bi-phone models and triphone models at most have been found to be predictive of acceptability scores-->I used stricter $4$-phone models for the current study due to the inclusion of multisyllabic words and potential long-distance dependencies such as vowel harmony across syllables. The extension of the conditioning environment further constrained the lexical space of candidates for each language. 
+
+[^2]: The choice for a phonotactic model that only considers frequencies, but not specific grammatical structures is due to both the practical efficiency of working with multiple languages, and the fact that the change in focus would not alter predictions made according to the hypothesis. For structures that are assigned low probabilities due to their accidental lack of attestation in the lexicon, their presence in baseline lexicons would be the same as their occurrences in the real lexicon.
+
+The probability of a word is, therefore, defined as the product of conditional probabilities of each segment in the phonological representation of the word given the previous 3 segments, which is represented by the number of occurrences of the $4$-segment sequence divided by that of the preceding 3-segment sequence in the lexicon (as common practice, the beginning and end of words were also counted as segments in the calculation). The number of occurrences (\#) of sequences were counted based on word types in the lexicons, not on word tokens in the corpora since multiple studies agreed on the positive correlation between word probabilities calculated from type frequencies and well-formedness judgments [@Greenberg_1964; @Treiman_2000; @Pierrehumbert_2003]; while the incorporation of token frequencies in the model often does not drastically improve the predictive power of the model [@Bailey_Hahn_2001; @Albright_2009]. <!--The difference between using type frequency and token frequency will be discussed in Section \ref{TypeVsToken} in more detail.-->In order to take stress into consideration, with the exception of Japanese and Korean, vowels with primary stresses are counted separately from their unstressed counterparts. For example, the probability of the word "movement" (/muvm\textturnv nt/) under the current $4$-phone model can be illustrated as: [^5]
+$$
+\begin{aligned}
+Pr(/mu_1vm\textit{\textipa{\textturnv}}_0nt/) &= Pr(m|\_) \times Pr(u_1|\_m) \times Pr(v|\_mu_1) \times Pr(m|mu_1v) \times \\ &Pr(\textit{\textipa{\textturnv}}_0|u_1vm) \times Pr(n|vm\textit{\textipa{\textturnv}}_0) \times Pr(t|m\textit{\textipa{\textturnv}}_0n) \times Pr(\_|\textit{\textipa{\textturnv}}_0nt) \\
+&= \frac{\#\_m}{\#\_} \times \frac{\#\_mu_1}{\#\_m} \times \frac{\#\_mu_1v}{\#\_mu_1} \times \frac{\#mu_1vm}{\#mu_1v} \times \\ &\frac{\#u_1vm\textit{\textipa{\textturnv}}_0}{\#u_1vm} \times
+\frac{\#vm\textit{\textipa{\textturnv}}_0n}{\#vm\textit{\textipa{\textturnv}}_0} \times \frac{\#m\textit{\textipa{\textturnv}}_0nt}{\#m\textit{\textipa{\textturnv}}_0n} \times \frac{\#\textit{\textipa{\textturnv}}_0nt\_}{\#\textit{\textipa{\textturnv}}_0nt}
+\end{aligned}
+$$
+Phonotactic probabilities were computed in log format where log probabilities of subparts were combined additively. In later comparisons between phonotactic probability distributions, log probabilities were also used. Besides the technical advantage of avoiding numerical underflow<!--?mention that it is a technical advantage, technical issue-->, this choice was made in accordance to previous findings, where logarithmic scales for probabilities have been found to correlate stronger with gradient well-formedness ratings [e.g. @Pierrehumbert_1997; @Frisch_2000] and account for more variance than unlogged probabilities [e.g. @Bailey_Hahn_2001]. <!--possibly due to the linear shape of the log probabilities-->
+<!--FINI02-->
+
+[^5]: Number $0$ and $1$ mark unstressed and stressed vowels.
+
+### The sampling procedure
+<!--FINI03-->
+The $4$-phone model of a language using transitional probabilities permits all $4$-phone sequences that are present in the real lexicon. Based on these context-segment sequences that are found in the lexicons, phonotactically-acceptable words were enumerated up to $8$ segments with their probabilities assigned by the $4$-phone model so that all phonotactically-plausible words were listed out. Longer words were not taken into consideration for computational convenience. These enumerated words together make up the pool of words for the lexicon to choose from. 
+
+Thus, real lexicons to be later compared to phonotactically-controlled baseline lexicons only contain words up to $8$ segments. The number of word types in these lexicons are listed in the last column of Table \ref{tab:basic_table}.
+<!--there are `r corpora_info_enum[1,1]` English words that were enumerated, `r corpora_info_enum[2,1]` words in German, `r corpora_info_enum[3,1]` words in Spanish, `r corpora_info_enum[4,1]` words in Arabic, `r corpora_info_enum[5,1]` words in Japanese and `r corpora_info_enum[6,1]` words in Korean.-->
+
+<!-- ```{r enum_table, echo=FALSE} -->
+<!-- #load('Data_for_Plotting/Corpora_info.RData') -->
+<!-- knitr::kable(corpora_info_enum, 'latex', booktabs = T, align = 'c', caption = 'Information on available words in filtered lexicons after enumeration') %>%  -->
+<!--   kable_styling(position = 'center', full_width = T) %>% -->
+<!--   column_spec(3, width = '10em') %>% -->
+<!--   column_spec(1, width = '2.5em') %>% -->
+<!--   column_spec(2, width = '9em') %>% -->
+<!--   column_spec(4, width = '12em') -->
+<!-- #  row_spec(0, align = 'c') -->
+<!-- ``` -->
+
+The sampling process of baseline lexicons followed certain rules. Each lexicon has an identical composition as the real lexicon in terms of the number of words with specific numbers of segments and syllables. Within each subgroup of a specific segment and syllable combination, words were randomly selected from the pool of enumerated words without replacement according to probabilities attributed by the $4$-phone model. Under such circumstances, each sample lexicon would be identical to the real lexicon with respect to their sizes and the distribution of word and syllable lengths.
+
+Sample baseline lexicons of a language were generated under the assumption (as discussed in Section \ref{hypothesis}) that the lexicon of a language is formed by randomly selecting from all phonotactically-plausible candidates based on their probabilities. As discussed in Section \ref{hypothesis}, if the language model which evaluates the probability of a word by sequentially and independently incorporating its subparts captures the nature of phonotactics, sample baseline lexicons would be no different from the real lexicon. Since the distribution of log probabilities are of concern in the current study, the distribution of log probabilities in sample lexicons and that of a real lexicon should be from the same population. Statistical analysis was conducted to test this null hypothesis. 
+<!--FINI03-->
+
+## Results {#res}
+<!--The null hypothesis-->
+<!--how stats were conducted-->
+<!--FINI04-->
+
+As stated in Section \ref{param}, quartiles of the distribution of phonotactic probabilities are parameters used for the comparison between the real lexicon and sample baseline lexicons. No assumptions can be made about distributions of each parameter. Their cumulative distribution functions were thus estimated using empirical distribution functions of these parameters given a large amount of sample lexicons. The reason for relying on empirical distribution functions is that they are guaranteed to asymptotically converge to the cumulative distribution functions (based on the strong law of large numbers).
+<!--FINI04-->
+
+```{r , echo=FALSE}
+load('Data_for_Plotting/Params_Info.RData')
+table_final <- subset(table_ht_summary, 
+                      parameter == 'Q1' | 
+                        parameter == 'median' | 
+                        parameter == 'Q3')
+table_final <- as.data.frame(table_final)
+```
+
+```{r param_table, echo=F, results="asis"}
+cat("\\begin{table}\\caption{Quartiles of the distributions of log probabilities and estimated 95\\% intervals (based on $10,000$ sample lexicons)}\n\n")
+kable(table_final, digits = 3, format = 'latex',
+             booktabs = T, align = 'c', longtable = T) %>% 
+  kable_styling(position = 'center') %>%
+  column_spec(1, width = '4.5em') %>%
+  column_spec(2, width = '4.5em') %>%
+  column_spec(3:4, width = '5.5em') %>%
+  column_spec(5, width = '5em') %>%
+  column_spec(6, width = '4.5em') %>%
+  column_spec(7, width = '1.5em') %>%
+  collapse_rows(columns = 1:2, valign = 'middle', latex_hline = 'custom', custom_latex_hline = 1) %>%
+  footnote(alphabet = c('Real lexicon parameters outside of the estimated 95% intervals are marked with ``*";', 'Real lexicon parameters greater than all values of the corresponding parameter in sample lexicons are marked as 100% in the ``percentile" column;', 'The English Q3, the Spanish Q3 and the German median are the same for all sample lexicons due to the discrete nature of log probabilities generated from the language model and their clustering around certain values. The same goes for the Japanese Q3 which only falls on very few values'), threeparttable = T)
+cat("\\end{table}\n\n")
+```
+
+<!--can be fixed with adding noise to each word in every sample-->
+
+```{r general_density, out.width = "95%", fig.cap = 'Probability density distributions of log probabilities from the real lexicon and 100 simulated sample baseline lexicons', echo=FALSE}
+include_graphics("Data_for_Plotting/general_density.pdf")
+```
+
+
+<!--FINI05-->
+Taken from distributions of phonotactic probabilities of all words from $10,000$ baseline lexicons, Table <!--\ref{tab:param_table}-->2 illustrates for each quartile values within the 95% interval. Values of each parameter in the real lexicon is compared to sampling distributions of the same parameter to pinpoint where it falls compared to the generated baseline (as shown in the "percentile" column). 
+
+As far as quartiles are concerned, Table <!--\ref{tab:param_table}-->2 shows that the distributions of log probabilities in every real lexicon are not the same as those of any baseline lexicons in terms of at least 1 parameter. For English and German, given $10,000$ simulated values of each quartile in the baseline distribution, quartiles of the real lexicon exceed the upper bound for each of these parameters. This indicates that densities of log probabilities of the real lexicons for these 2 languages are overall shifted to higher values than their baseline counterparts. Such a trend is captured in Figure \ref{fig:general_density} where density distributions of $100$ sample lexicons and the real lexicon for each language are represented[^6]. The x-axis represents lower to higher values of log probabilities, the y-axis marks the density words at each probability. The peaks in the probability density distributions of real English and German lexicon which lie in the range of high log probabilities stand out from the generated baseline. Overall, real English and German lexicons are more shifted to higher probabilities and have thinner tails than distributions of sample lexicons, suggesting less low-probability words than expected.
+
+[^6]: Scales for density distributions of each language are adjusted for a clearer presentation of data. The unadjusted version can be found in Figure \ref{fig:unscaled_density} in Appendix A.
+
+Arabic median and Q3 are greater than those of any sample lexicons, which also suggests that the body of the density distribution of the real lexicon is more clustered around higher values than that of the simulated baseline distributions. The Arabic Q1, however, is lower than the majority of simulated Q1s (at $5.73\%$).<!--, which indicates that there are also more lower-probability words in the real lexicon. This corresponds to the heavier tail of the real lexicon in Figure \ref{fig:general_density}.--> Similarly, the Spanish Q1 of the real lexicon is significantly lower than expectation for a significance level of 0.05, which, as in the Arabic distribution, corresponds to a heavier tail in Figure \ref{fig:general_density}. The Spanish median is greater than the majority of simulated medians (at $89.1\%$), while the Q3 is the same as those of the sample lexicon distributions. For both Arabic and Spanish, given that the Q1 is especially low, the higher median and the comparable Q3 still indicates that the body of the real lexicon distribution shifts more to the right than expected.
+
+In terms of Japanese, the difference between Q1 of the real lexicon and the baseline is close to being significant (at $91.15\%$). Q2 of the real lexicon is representative of that of the baseline, but Q3 again falls onto the higher end of the estimation (at $99.7\%$). For Korean, the only quartile of the real lexicon that stands out from the sample lexicons is Q1, which is significantly higher. The other two quartiles for Korean does not provide sufficient evidence to say that the real lexicon has a distribution significantly different from the baseline distribution.
+<!--FINI05-->
+
+## Discussion
+
+### Preliminary conclusion and implications
+Analysis of 6 languages shows that more than half of languages tested in the current study have lexicons with clearly more higher-probability words than expected by $4$-phone phonotactic model over segments. For Korean and Japanese whose lexicons do not show a consistent predisposition for higher-probability words, the distribution of log probabilities of these lexicons still show some shift to the higher-probability end in at least one parameter.
+
+The clear shift towards higher phonotactic probabilities displayed in English, German, Spanish and Arabic lexicons is compatible with predictions of the superadditivity account: A $4$-phone phonotactic model is not adequate in modeling the phonotactics of these languages; there are under-attestation of words in real lexicons, and their phonotactic probabilities according to this model are on the lower end of the distribution. The significance of this finding is that even if real lexicons behave differently than baseline lexicons, there is no inherent motivation for them to shift to the same side of higher probabilities, as observed in 4 languages in the results. <!--The set of languages studied here is still too small to draw any definite conclusions.-->The potential cross-linguistic existence of such a trend does provide evidence for the prevalence of superadditivity effects in languages. 
+
+This result can also be linked to processing advantages of words with higher phonotactic probabilities as discussed in Section \ref{recognition}. <!--is also consistent with the theory discussed in Section \ref{lex} that words that are phonotactically more acceptable have an advantage in the evolution of lexicons due to their processing advantages.-->Despite the correlation between neighborhood density and phonotactic probabilities, it seems more plausible to attribute the processing advantage to phonotactic acceptability rather than the similarity account. As discussed in Section \ref{compare}, phonotactic probabilities and phonological similarity separately contribute to the metrics such as well-formedness judgments. They have distinct effects in spoken word recognition, yet higher phonotactic probabilities consistently have facilitative effects in both word recognition and production. Moreover, from a parsimony point of view, compared to similarity, it is easier to relate phonotactic probability to other phonological constructs such as markedness and ease of articulation.
+
+Additionally, as illustrated in Table 2 and Figure \ref{fig:general_density}, English and German lexicons show similar patterns and results in terms of both the distribution of the real lexicon and distributions of baseline lexicons. Notably results from @GP which showed the clustering of lexicons were based on Dutch, German, English and French. A consistent result would be expected from these languages due to how closely related they are. Similarities between English and German lexicons and dissimilarities between lexicons of other languages found in the current study point to the importance of establishing a theory across language families. 
+
+### Limitations of the phonotactic model
+<!--FINI06-->
+There are limitations to using a simple<!--naive/unrefined?--> baseline $n$-gram model for the estimation of phonotactic probabilities. Under common practice, the probability of a sequence is defined as the product of transitional probabilities of its subparts. This means that the model would assign zero probability to any sequence with any subparts that may accidentally not be present in the lexicon. Given a fixed size of the lexicon, the higher the $n$, the more likely such accidents would occur. 
+<!--for the same reason, n-gram models are bad at modeling gradience in well-formedness judgments of ungrammatical sequences-->
+
+For the current study with $n = 4$, therefore, the conservative language model would theoretically only generate a subset of words that can potentially appear in the lexicon of a language. Moreover, this subset contains only words that are most representative of existing words, which means it would overfit the original lexicon. However, real lexicons of languages are still shown to be more or less different from baseline lexicons. Additionally, over half of the investigated lexicons are significantly more shifted to higher probabilities, which suggests some systematic predisposition that calls for the exploration of more languages<!--since Korean and Japanese do not share the same pattern, it is apparent that this is not an inherent property of the model either-->. With such restrictions on the degrees of freedom, this finding further demonstrates the inadequacy of modeling subparts of phonological sequences as independent or equal components to the phonotactic probability or the well-formedness of a word. Nevertheless, in light of discoveries made with the current model, further research can employ more refined models that respectively incorporate different levels of phonological information to draw more concrete conclusions about what clusters, constraints or subsegemental features are under- or over-attested in the real lexicon.
+
+Practically speaking, smoothing would be applied to language models to take away probabilities from frequent patterns and assign them to unattested patterns in training data [see @Jurafsky_book, chapter 4]. This modification was not conducted in the current study. If some probabilities were assigned to zero-probability patterns from higher-probabilities words, distributions of baseline lexicons would shift further to the left. The fact that distributions of real lexicon probabilities in several languages are already on the right side of those of baseline lexicons without smoothing further demonstrates the validity of current results.
+<!--
+Practically speaking, the $4$-phone model used here was unable to capture the fine-grained differences for words with less than 4 segments due to the calculation of conditional probabilities, which renders a certain amount of overlap between the real lexicon and generated lexicons in higher probabilities. This can be improved by incorporating backoffs into the model. More specifically, if a 4-segment pattern (e.g. "abcd") has zero frequency in the lexicon, instead of conditioning the probability of the last segment on the three preceding segments ($Pr(d|abc)$), its probability can be estimated by the narrowing the context to two preceding segments ($Pr(d|bc)$) or even one ($Pr(d|c)$) and zero ($Pr(d)$) if shorter combinations are still unattested in the lexicon. 不是用来解决这个问题的--> 
+
+<!--FINI06-->
+<!--### \{the heavy tail at the end and what can be said about Korean\}-->
+### Possible explanations and error analysis
+
+The significant deviance of several lexicons from their presumed phonotactic baseline implies that structures which induce superadditivity effects in these languages can be found within the range of words whose probabilities under the current model were under-attested. <!--Therefore, more detailed analysis of what words and structures fall under this range should provide more insight into structures that conform to superadditivity effects in each language.-->
+
+The Japanese results might be incomparable to results of other languages in the current study due to the lack of representativeness of words given the small number of frequencies in the corpus (as shown in Table \ref{tab:basic_table}). Yet Korean also does not provide sufficient evidence to reject the null hypothesis. However, if this result is taken as an indication of the adequate explanatory power of an additive phonotactic model for Korean, then it would mean that there are little superadditivity effect to be found in the Korean lexicon. It would be important to see which unique characteristics of Korean can result in such conformity to probabilities.
+<!-- include in Appendix (zoomed left tails in general density)
+```{r tail_density, out.width = "95%", fig.cap = "Left tails of probability density distributions of log probabilities from the real lexicon and 100 simulated sample baseline lexicons", echo=FALSE}
+include_graphics("Data_for_Plotting/density_tail_zoomed.pdf")
+```
+-->
+
+Despite the general shift of real lexicon distributions towards higher probabilities shown by statistical results, Figure \ref{fig:general_density} seems to show distributions of real lexicons have higher peaks than baseline lexicons, indicating that words in real lexicons are particularly over-attested around certain higher probabilities rather than being over-attested around a range of probabilities. This is due to the presentation of the data. Density distributions shown in Figure \ref{fig:general_density} are smoothed over very skewed distributions which leads to distinction between curves concentrating on peaks. Frequency polygons of these distributions are shown in Figure \ref{fig:general_freqpoly} in Appendix A to demonstrate more intuitively how skewed distributions of phonotactic probabilities are.
+
+Another interesting observation in Figure \ref{fig:general_density} is that towards the very low end of modeled phonotactic probabilities, there is an obvious over-attestation of words in the real lexicons of Arabic, English and Spanish (shown more clearly in Figure \ref{fig:zoom_density} in Appendix A). In other words, there are words that are deemed of very low probabilities by the 4-phone model that are over-attested in these languages. 
+
+A look into attested English words with log probabilities below $-13.5$ reveals that almost all ($54$ out of $64$) attested words with such low phonotactic probabilities are of Latin and French origin. Out of these words, some of them seem to only appear in the $5000$ most frequent words due to specific contexts used for counting frequencies (e.g. *"pasta", "solitaire", "satellite", "recipes", "spaniel", "oxygen", "patriot", "matrix"*). Others are frequently used words with combinations or stress patterns that are rarely observed in other parts of the lexicon (e.g. *"honesty", "extent", "capital", "medicine", "orange", "semester", "penalty", "fantasy", "guarantee", "agencies", "anxious", "mechanic", "transit"*). Therefore, it is possible to attribute the over-attestation of very low-probability words to borrowings that did not fully assimilate to the phonotactics of the language. Reasons for the existence of such idiosyncrasies in the lexicon is beyond the scope of the current study. They could also have contributed to the especially low Q1s of Arabic and Spanish shown in Table <!--\ref{tab:param_table}-->2. But this made little impact on the overall trend of these two lexicons leaning towards higher-probability words.
+
+# General Discussion
+
+```{r child="Gen_Discussion_Prelim.Rmd"}
+```
+
+\newpage
+
+# References {-}
+\setlength{\parindent}{-0.2in}
+\setlength{\leftskip}{0.2in}
+\setlength{\parskip}{8pt}
+\noindent
+\singlespacing
+<div id="refs"></div>
+
+\newpage
+
+\appendix
+
+# Supplementary Figures
+
+```{r child="appendix_b.Rmd"}
+```
+
+# Language Sketches
+
+Inventories are extracted based on phonemic or phonetic representations used in each corpus.
+
+\includepdf[pages=-, pagecommand={}]{appendix_a.pdf}
+<!--\thispagestyle{plain}-->
